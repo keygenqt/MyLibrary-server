@@ -14,20 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from cement import Controller, ex
-from cement.utils.version import get_version_banner
-from ..core.version import get_version
+from .model_user import ModelUser
+from sqlalchemy import text
+from sqlalchemy import func
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, TIMESTAMP
 
-VERSION_BANNER = """
-MyLibrary server side %s
-%s
-""" % (get_version(), get_version_banner())
+Base = declarative_base()
 
 
-class Base(Controller):
-    class Meta:
-        label = 'base'
-        description = 'MyLibrary server side'
-        arguments = [
-            (['-v', '--version'], dict(action='version', version=VERSION_BANNER)),
-        ]
+class ModelUserToken(Base):
+    __tablename__ = 'users_tokens'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer)
+    token = Column(String)
+    message_token = Column(String)
+    uid = Column(String)
+    created_at = Column(TIMESTAMP)

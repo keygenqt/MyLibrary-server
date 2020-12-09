@@ -1,5 +1,4 @@
 """
-------------------------------------------------------------------------------
 Copyright 2020 Vitaliy Zarubin
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+
 from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
 from ..models.model_notification import ModelNotification
@@ -27,29 +27,7 @@ class Notification(Controller):
         label = 'notification'
         description = 'MyLibrary notification'
 
-    @ex(
-        help='sending firebase push messages',
-        arguments=[
-            (['-t', '--type'],
-             dict(
-                 dest='type',
-                 action='store',
-                 default='server',
-                 choices=['server', 'client'])),
-        ],
-    )
+    @ex(help='sending firebase push messages')
     def notification(self):
-        if self.app.pargs.type is not None:
-            if self.app.pargs.type == 'server':
-                self._server()
-            if self.app.pargs.type == 'client':
-                self._client()
-
-    @ex(hide=True)
-    def _server(self):
-        data = {'items': self.app.db.query(ModelNotification).order_by(ModelNotification.user_id)}
-        self.app.render(data, 'items/list.jinja2')
-
-    @ex(hide=True)
-    def _client(self):
-        self.app.render({'type': '_client'}, 'example.jinja2')
+        for x in ModelNotification.find_open(self.app.db):
+            self.app.log.info(x.message_token + ', message: ' + x.notification)
