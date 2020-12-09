@@ -1,0 +1,8 @@
+### MyLibrary Configuration Settings
+---
+
+mysql:
+  user: dbuser
+  pass: dbpass
+  name: dbname
+  host: dbhost

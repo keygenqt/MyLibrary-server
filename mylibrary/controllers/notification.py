@@ -15,7 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
+from ..models.model_notification import ModelNotification
+
+Base = declarative_base()
 
 
 class Notification(Controller):
@@ -43,7 +47,8 @@ class Notification(Controller):
 
     @ex(hide=True)
     def _server(self):
-        self.app.render({'type': '_server'}, 'example.jinja2')
+        data = {'items': self.app.db.query(ModelNotification).order_by(ModelNotification.user_id)}
+        self.app.render(data, 'items/list.jinja2')
 
     @ex(hide=True)
     def _client(self):

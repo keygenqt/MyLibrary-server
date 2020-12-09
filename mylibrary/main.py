@@ -22,6 +22,7 @@ from .controllers.base import Base
 from .controllers.backup import Backup
 from .controllers.cleaner import Cleaner
 from .controllers.notification import Notification
+from .ext.sqlalchemy_init import sqlalchemy_init
 
 CONFIG = init_defaults('mylibrary')
 
@@ -61,6 +62,10 @@ class MyApp(App):
             Backup,
             Cleaner,
             Notification,
+        ]
+
+        hooks = [
+            ('post_setup', sqlalchemy_init),
         ]
 
 
