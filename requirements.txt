@@ -4,3 +4,4 @@ pyyaml
 colorlog
 sqlalchemy
 PyMySQL
+firebase-admin

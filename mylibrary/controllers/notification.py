@@ -18,6 +18,7 @@ limitations under the License.
 from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
 from ..models.model_notification import ModelNotification
+from ..ext.firebase_messaging import send_to_token
 
 Base = declarative_base()
 
@@ -30,4 +31,5 @@ class Notification(Controller):
     @ex(help='sending firebase push messages')
     def notification(self):
         for x in ModelNotification.find_open(self.app.db):
+            result = send_to_token(x.message_token, x.notification)
             self.app.log.info(x.message_token + ', message: ' + x.notification)
