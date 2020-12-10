@@ -29,14 +29,21 @@ class ModelNotification(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer)
-    notification = Column(String)
+    channel_id = Column(String)
+    title = Column(String)
+    body = Column(String)
     status = Column(String)
     created_at = Column(TIMESTAMP)
     message_token = Column(String)
 
     @classmethod
     def find_open(cls, session):
-        return session.query(ModelNotification.id, ModelNotification.notification, ModelUserToken.message_token.label("message_token")) \
+        return session.query(
+            ModelNotification.id,
+            ModelNotification.channel_id,
+            ModelNotification.title,
+            ModelNotification.body,
+            ModelUserToken.message_token.label("message_token")) \
             .join(ModelUser, ModelUser.id == ModelNotification.user_id) \
             .join(ModelUserToken, ModelUser.id == ModelUserToken.user_id) \
             .filter(ModelNotification.status == 'open') \

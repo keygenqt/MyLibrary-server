@@ -7,15 +7,18 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/keygenqt/.mylibrary/mylibr
 
 default_app = firebase_admin.initialize_app()
 
-def send_to_token(token, message):
+# /home/keygenqt/Android/Sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://keygenqt.com/licenses"
+def send_to_token(model):
     return messaging.send(messaging.Message(
         notification=messaging.Notification(
-            title='$GOOG up 1.43% on the day',
-            body=message,
+            title=model.title,
+            body=model.body,
         ),
-        data={
-            'score': '850',
-            'time': '2:45',
-        },
-        token=token,
+        android=messaging.AndroidConfig(
+            notification=messaging.AndroidNotification(
+                channel_id=model.channel_id,
+                click_action='https://keygenqt.com/licenses'
+            ),
+        ),
+        token=model.message_token,
     ))

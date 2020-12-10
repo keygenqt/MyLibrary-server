@@ -31,5 +31,5 @@ class Notification(Controller):
     @ex(help='sending firebase push messages')
     def notification(self):
         for x in ModelNotification.find_open(self.app.db):
-            result = send_to_token(x.message_token, x.notification)
-            self.app.log.info(x.message_token + ', message: ' + x.notification)
+            result = send_to_token(x)
+            self.app.log.info('message: ' + result.title())
