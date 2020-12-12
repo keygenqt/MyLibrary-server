@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-
 from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
 from ..models.model_notification import ModelNotification
@@ -30,6 +29,7 @@ class Notification(Controller):
 
     @ex(help='sending firebase push messages')
     def notification(self):
-        for x in ModelNotification.find_open(self.app.db):
-            result = send_to_token(x)
-            self.app.log.info('message: ' + result.title())
+        for model in ModelNotification.find_open(self.app):
+            send_to_token(model)
+            ModelNotification.close(model, self.app)
+        self.app.db.commit()

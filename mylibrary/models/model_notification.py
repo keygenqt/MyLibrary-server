@@ -31,17 +31,19 @@ class ModelNotification(Base):
     user_id = Column(Integer)
     channel_id = Column(String)
     title = Column(String)
+    uri = Column(String)
     body = Column(String)
     status = Column(String)
     created_at = Column(TIMESTAMP)
     message_token = Column(String)
 
     @classmethod
-    def find_open(cls, session):
-        return session.query(
+    def find_open(cls, app):
+        return app.db.query(
             ModelNotification.id,
             ModelNotification.channel_id,
             ModelNotification.title,
+            ModelNotification.uri,
             ModelNotification.body,
             ModelUserToken.message_token.label("message_token")) \
             .join(ModelUser, ModelUser.id == ModelNotification.user_id) \
@@ -49,3 +51,8 @@ class ModelNotification(Base):
             .filter(ModelNotification.status == 'open') \
             .filter(ModelUser.enabled == 1) \
             .all()
+
+    @classmethod
+    def close(cls, notification, app):
+        app.db.query(cls).filter(cls.id == notification.id).update({cls.status: "done"}, synchronize_session=False)
+        app.log.info('notification id: ' + str(notification.id) + ', done')

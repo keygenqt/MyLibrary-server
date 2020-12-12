@@ -8,21 +8,20 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/keygenqt/.mylibrary/mylibr
 default_app = firebase_admin.initialize_app()
 
 # /home/keygenqt/Android/Sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://keygenqt.com/licenses"
-def send_to_token(model):
-    return messaging.send(messaging.Message(
+def send_to_token(notification):
+    messaging.send(messaging.Message(
         notification=messaging.Notification(
-            title=model.title,
-            body=model.body,
+            title=notification.title,
+            body=notification.body,
         ),
         android=messaging.AndroidConfig(
             notification=messaging.AndroidNotification(
-                channel_id=model.channel_id,
+                channel_id=notification.channel_id,
                 click_action='android.intent.action.DEEP_LINK'
             ),
         ),
         data={
-            # 'uri': 'http://192.168.1.68:8080/licenses'
-            'uri': 'http://192.168.1.68:8080/books/1'
+            'uri': notification.uri
         },
-        token=model.message_token,
+        token=notification.message_token,
     ))
