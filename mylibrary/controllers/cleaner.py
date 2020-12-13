@@ -14,8 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import os
 from cement import Controller, ex
 from ..models.model_user_token import ModelUserToken
+from ..models.model_image import get_model_image
+from configparser import NoSectionError
+from pathlib import Path
 
 
 class Cleaner(Controller):
@@ -43,8 +47,40 @@ class Cleaner(Controller):
 
     @ex(hide=True)
     def _tokens(self):
+        # clear tokens if od timestamp, default = 30 days
         ModelUserToken.clear_old(self.app)
 
     @ex(hide=True)
     def _images(self):
-        self.app.render({'type': '_images'}, 'example.jinja2')
+        try:
+            folder = self.app.config.get('cleaner_image', 'dir')
+            table = self.app.config.get('cleaner_image', 'table')
+            primary = self.app.config.get('cleaner_image', 'primary')
+            column = self.app.config.get('cleaner_image', 'column')
+            extensions = [".png", ".jpg", ".jpeg"]
+            db_image = []
+            db_folder = []
+
+            # get db images
+            for item in get_model_image(table, primary, column).find_images(self.app):
+                db_image.append(Path(item.image).name)
+
+            # get folder images
+            for item in Path(folder).glob("*"):
+                for ext in extensions:
+                    if ext in item.name.lower():
+                        db_folder.append(item.name)
+                        break
+
+            diff = list(set(db_folder) - set(db_image))
+
+            # remove image not have in db
+            for item in diff:
+                self.app.log.info('image "{}" removed'.format(item))
+                os.remove('{}/{}'.format(folder, item))
+
+            if not diff:
+                self.app.log.info('everything is already clear')
+
+        except NoSectionError:
+            pass

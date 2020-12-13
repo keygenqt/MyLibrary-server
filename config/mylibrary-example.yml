@@ -1,24 +1,57 @@
 ### MyLibrary Configuration Settings
 ---
 
+### Messaging google push firebase
+# query custom for specific db relations
+
+# google_application_credentials - https://cloud.google.com/docs/authentication/getting-started
 messaging:
   google_application_credentials: /home/library/credentials.json
 
+### Connect with mysql db
+# using sqlalchemy - https://docs.sqlalchemy.org/en/13/core/engines.html
+
+# host - db host
+# user - db user
+# passwd - db user password
+# name - db name
 db_conf:
   host: localhost
   user: db_user
   passwd: db_passwd
   name: db_library
 
+### Config path dir for dump
+# DIR for save db dump, file or dir
+# if remove 'dump_dir' dump not will save
+
+# path - dir path for save dumps
 dump_dir:
   path: /home/library/dump_dir
 
+### Config path dir for dump
+# FTP for save db dump, file or dir
+# if remove 'dump_dir' dump not will save
+
+# host - host ftp
+# user - ftp user
+# passwd - ftp user password
+# path - ftp path for save dumps
 dump_ftp:
   host: localhost
   user: ftp_user
   passwd: ftp_passwd
   path: /home/library/dump_ftp
 
+### Config file or dir for dump
+# all saved in tar.gz pigz (sudo apt-get install -y pigz)
+# with the possibility of multi-threaded archive build
+# with full path
+
+# processes - Number of processes used
+# exclude - tar --exclude=''
+# files - array for save file
+# dirs - array for save dir
 dump_tar: # sudo apt-get install -y pigz
   processes: 8
   exclude: [
@@ -32,3 +65,18 @@ dump_tar: # sudo apt-get install -y pigz
       /home/library/dump_dir1,
       /home/library/dump_dir2
   ]
+
+### Cleaning up non-database images
+# remove check by name with extensions *.png, *.jpg, *.jpeg
+# find file - extensions case insensitive (for example: *.png, *.PNG etc)
+# check names db & files name - case sensitive (image.PNG != image.png)
+
+# dir - dir with images files
+# table - table db for check images names
+# primary - id in table (sqlalchemy required)
+# column - column in table with path image
+cleaner_image:
+  dir: /home/library/dump_dir_with_images
+  table: books
+  primary: id
+  column: image
