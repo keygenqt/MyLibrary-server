@@ -1,0 +1,39 @@
+name: mylibrary
+base: core18
+version: '1.0.0'
+summary: Application for cataloging your books library. Server part - Cement.
+description: |
+  * server data backup
+  * cleaning up obsolete files and data
+  * sending firebase push messages
+
+grade: stable
+confinement: strict
+
+parts:
+
+  mylibrary:
+    plugin: python
+    python-version: python3
+    source: .
+    python-packages:
+      - cement == 3.0.4
+      - jinja2
+      - pyyaml
+      - colorlog
+      - sqlalchemy
+      - PyMySQL
+      - firebase-admin
+
+  mylibrary-run:
+    plugin: dump
+    source: scripts
+    organize:
+      run.sh: bin/
+
+apps:
+  mylibrary:
+    command: bin/run.sh
+    plugs:
+      - home
+      - network
