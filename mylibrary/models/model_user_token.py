@@ -24,6 +24,8 @@ Base = declarative_base()
 
 
 class ModelUserToken(Base):
+    CONST_DAYS = 30
+
     __tablename__ = 'users_tokens'
 
     id = Column(Integer, primary_key=True)
@@ -32,3 +34,9 @@ class ModelUserToken(Base):
     message_token = Column(String)
     uid = Column(String)
     created_at = Column(TIMESTAMP)
+
+    @classmethod
+    def clear_old(cls, app):
+        app.db.execute('DELETE FROM ' + cls.__tablename__ + ' WHERE created_at < NOW() - INTERVAL ' + str(cls.CONST_DAYS) + ' DAY')
+        app.db.commit()
+        app.log.info('clear older tokens done')

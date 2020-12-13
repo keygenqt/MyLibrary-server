@@ -15,6 +15,7 @@ limitations under the License.
 """
 
 from cement import Controller, ex
+from ..models.model_user_token import ModelUserToken
 
 
 class Cleaner(Controller):
@@ -30,25 +31,19 @@ class Cleaner(Controller):
                  dest='type',
                  action='store',
                  default='images',
-                 choices=['tokens', 'notification', 'images'])),
+                 choices=['tokens', 'images'])),
         ],
     )
     def cleaner(self):
         if self.app.pargs.type is not None:
             if self.app.pargs.type == 'tokens':
                 self._tokens()
-            if self.app.pargs.type == 'notification':
-                self._notification()
             if self.app.pargs.type == 'images':
                 self._images()
 
     @ex(hide=True)
     def _tokens(self):
-        self.app.render({'type': '_tokens'}, 'example.jinja2')
-
-    @ex(hide=True)
-    def _notification(self):
-        self.app.render({'type': '_notification'}, 'example.jinja2')
+        ModelUserToken.clear_old(self.app)
 
     @ex(hide=True)
     def _images(self):
