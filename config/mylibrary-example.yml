@@ -1,7 +1,7 @@
 ### MyLibrary Configuration Settings
 ---
 
-### Messaging google push firebase
+### Sending messages push firebase
 # query custom for specific db relations
 
 # google_application_credentials - https://cloud.google.com/docs/authentication/getting-started
