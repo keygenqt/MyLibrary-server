@@ -1,8 +1,17 @@
 ### MyLibrary Configuration Settings
 ---
 
-mysql:
-  user: dbuser
-  pass: dbpass
-  name: dbname
-  host: dbhost
+db_conf:
+  host: localhost
+  user: db_user
+  passwd: db_passwd
+  name: db_library
+
+dump_dir:
+  path: /home/library/dump_dir
+
+dump_ftp:
+  host: localhost
+  user: ftp_user
+  passwd: ftp_passwd
+  path: /home/library/dump_ftp

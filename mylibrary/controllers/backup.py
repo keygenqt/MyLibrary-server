@@ -14,7 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import subprocess
+import os
+import uuid
+from pathlib import Path
 from cement import Controller, ex
+from ..ext.dump import save_dump, save_ftp
 
 
 class Backup(Controller):
@@ -29,21 +34,34 @@ class Backup(Controller):
              dict(
                  dest='type',
                  action='store',
-                 default='mysql',
-                 choices=['mysql', 'images'])),
+                 default='db',
+                 choices=['db', 'dir'])),
         ],
     )
     def backup(self):
         if self.app.pargs.type is not None:
-            if self.app.pargs.type == 'mysql':
-                self._mysql()
-            if self.app.pargs.type == 'images':
-                self._images()
+            if self.app.pargs.type == 'db':
+                self._db()
+            if self.app.pargs.type == 'dir':
+                self._dir()
+
+    # noinspection PyBroadException
+    @ex(hide=True)
+    def _db(self):
+        db_user = self.app.config.get('db_conf', 'user')
+        db_pass = self.app.config.get('db_conf', 'passwd')
+        db_name = self.app.config.get('db_conf', 'name')
+        tmp = str(Path.home()) + '/' + str(uuid.uuid4())
+
+        # subprocess for suppress output warning
+        subprocess.getoutput('mysqldump -u ' + db_user + ' -p' + db_pass + ' ' + db_name + ' > ' + tmp)
+        try:
+            save_dump(self.app, tmp)
+            save_ftp(self.app, tmp)
+        except:
+            self.app.log.error('An error occurred while saving, check config file.')
+        os.remove(tmp)
 
     @ex(hide=True)
-    def _mysql(self):
-        self.app.render({'type': '_mysql'}, 'example.jinja2')
-
-    @ex(hide=True)
-    def _images(self):
-        self.app.render({'type': '_images'}, 'example.jinja2')
+    def _dir(self):
+        self.app.render({'type': 'dir'}, 'example.jinja2')
