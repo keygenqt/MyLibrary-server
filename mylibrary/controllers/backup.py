@@ -35,15 +35,15 @@ class Backup(Controller):
                  dest='type',
                  action='store',
                  default='db',
-                 choices=['db', 'dir'])),
+                 choices=['db', 'tar'])),
         ],
     )
     def backup(self):
         if self.app.pargs.type is not None:
             if self.app.pargs.type == 'db':
                 self._db()
-            if self.app.pargs.type == 'dir':
-                self._dir()
+            if self.app.pargs.type == 'tar':
+                self._tar()
 
     # noinspection PyBroadException
     @ex(hide=True)
@@ -51,17 +51,64 @@ class Backup(Controller):
         db_user = self.app.config.get('db_conf', 'user')
         db_pass = self.app.config.get('db_conf', 'passwd')
         db_name = self.app.config.get('db_conf', 'name')
-        tmp = str(Path.home()) + '/' + str(uuid.uuid4())
+        tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
 
         # subprocess for suppress output warning
-        subprocess.getoutput('mysqldump -u ' + db_user + ' -p' + db_pass + ' ' + db_name + ' > ' + tmp)
+        subprocess.getoutput('mysqldump -u {} -p{} {} > {}'.format(db_user, db_pass, db_name, tmp))
         try:
             save_dump(self.app, tmp)
             save_ftp(self.app, tmp)
+            self.app.log.info('save db dump done')
         except:
             self.app.log.error('An error occurred while saving, check config file.')
         os.remove(tmp)
 
+    # noinspection PyBroadException
     @ex(hide=True)
-    def _dir(self):
-        self.app.render({'type': 'dir'}, 'example.jinja2')
+    def _tar(self):
+        files = self.app.config.get('dump_tar', 'files')
+        dirs = self.app.config.get('dump_tar', 'dirs')
+        exclude = self.app.config.get('dump_tar', 'exclude')
+        processes = self.app.config.get('dump_tar', 'processes')
+        result = {}
+
+        for item in files:
+            if os.path.isfile(item):
+                self.app.log.info('Start compress file: {}'.format(item))
+                tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
+                subprocess.getoutput(
+                    'tar --absolute-names --use-compress-program="pigz --best --recursive -p {}" -cf {} {}'.format(processes,
+                                                                                                                   tmp,
+                                                                                                                   item))
+                result[item] = tmp
+            else:
+                self.app.log.error('File not exits: {}'.format(item))
+
+        for item in dirs:
+            if os.path.isdir(item):
+                self.app.log.info('Start compress dir: {}'.format(item))
+                tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
+                if not exclude:
+                    subprocess.getoutput(
+                        'tar --absolute-names --use-compress-program="pigz --best --recursive -p {}" -cf {} {}'.format(processes,
+                                                                                                                       tmp,
+                                                                                                                       item))
+                else:
+                    _exclude = '--exclude={}'.format(' --exclude='.join(exclude))
+                    subprocess.getoutput(
+                        'tar --absolute-names --use-compress-program="pigz --best --recursive -p {}" {} -cf {} {}'.format(processes,
+                                                                                                                          _exclude,
+                                                                                                                          tmp,
+                                                                                                                          item))
+                result[item] = tmp
+            else:
+                self.app.log.error('Dir not exits: {}'.format(item))
+
+        for item in result:
+            try:
+                save_dump(self.app, result[item], item)
+                save_ftp(self.app, result[item], item)
+            except:
+                self.app.log.error('An error occurred while saving, check config file.')
+            os.remove(result[item])
+        self.app.log.info('save tars dump done')

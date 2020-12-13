@@ -19,31 +19,33 @@ import shutil
 import ftplib
 from configparser import NoSectionError
 from ftplib import error_perm
+from pathlib import Path
 
 
-def __create_name(app):
+def __create_name(app, file=None):
     try:
-        db_name = app.config.get('db_conf', 'name')
-        time = '_' + str(f"{datetime.datetime.now():%Y-%m-%d}")
-        return db_name + time + '.sql'
+        time = '_{}'.format(f"{datetime.datetime.now():%Y-%m-%d}")
+        if file is None:
+            return '{}{}.sql'.format(app.config.get('db_conf', 'name'), time)
+        else:
+            return '{}{}.tar.gz'.format(Path(file).name, time)
     except NoSectionError:
         return None
 
 
-def save_dump(app, temp):
-    filename = __create_name(app)
+def save_dump(app, temp, file=None):
+    filename = __create_name(app, file)
     if filename is not None:
         try:
-            shutil.copy(temp, app.config.get('dump_dir', 'path') + '/' + filename)
-            app.log.info('save dir dump done')
+            shutil.copy(temp, '{}/{}'.format(app.config.get('dump_dir', 'path'), filename))
         except NoSectionError:
             pass
-        except FileNotFoundError as error:
+        except FileNotFoundError:
             app.log.error('not such dump_dir->path for dump')
 
 
-def save_ftp(app, temp):
-    filename = __create_name(app)
+def save_ftp(app, temp, file=None):
+    filename = __create_name(app, file)
     if filename is not None:
         try:
             host = app.config.get('dump_ftp', 'host')
@@ -53,11 +55,10 @@ def save_ftp(app, temp):
 
             session = ftplib.FTP(host, user, passwd)
             file = open(temp, 'rb')
-            session.storbinary('STOR ' + path + '/%s' % filename, file)
+            session.storbinary('STOR {}/%s'.format(path) % filename, file)
             file.close()
             session.quit()
 
-            app.log.info('save ftp dump done')
         except NoSectionError:
             pass
         except error_perm as error:

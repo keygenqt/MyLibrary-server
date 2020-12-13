@@ -37,6 +37,6 @@ class ModelUserToken(Base):
 
     @classmethod
     def clear_old(cls, app):
-        app.db.execute('DELETE FROM ' + cls.__tablename__ + ' WHERE created_at < NOW() - INTERVAL ' + str(cls.CONST_DAYS) + ' DAY')
+        app.db.execute('DELETE FROM {} WHERE created_at < NOW() - INTERVAL {} DAY'.format(cls.__tablename__, cls.CONST_DAYS))
         app.db.commit()
         app.log.info('clear older tokens done')

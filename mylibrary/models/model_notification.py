@@ -55,4 +55,4 @@ class ModelNotification(Base):
     @classmethod
     def close(cls, notification, app):
         app.db.query(cls).filter(cls.id == notification.id).update({cls.status: "done"}, synchronize_session=False)
-        app.log.info('notification id: ' + str(notification.id) + ', done')
+        app.log.info('notification id: {}, done'.format(notification.id))

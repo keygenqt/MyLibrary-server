@@ -18,3 +18,17 @@ dump_ftp:
   user: ftp_user
   passwd: ftp_passwd
   path: /home/library/dump_ftp
+
+dump_tar: # sudo apt-get install -y pigz
+  processes: 8
+  exclude: [
+      '*.xml'
+  ]
+  files: [
+      /home/library/dump_file1,
+      /home/library/dump_file2
+  ]
+  dirs: [
+      /home/library/dump_dir1,
+      /home/library/dump_dir2
+  ]

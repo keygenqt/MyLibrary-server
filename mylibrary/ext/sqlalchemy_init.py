@@ -23,6 +23,6 @@ def sqlalchemy_init(app):
     db_pass = app.config.get('db_conf', 'passwd')
     db_name = app.config.get('db_conf', 'name')
     db_host = app.config.get('db_conf', 'host')
-    engine = create_engine('mysql+pymysql://' + db_user + ':' + db_pass + '@' + db_host + '/' + db_name)
+    engine = create_engine('mysql+pymysql://{}:{}@{}/{}'.format(db_user, db_pass, db_host, db_name))
     SessionMysql = sessionmaker(bind=engine)
     app.extend('db', SessionMysql())
