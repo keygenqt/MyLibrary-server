@@ -13,13 +13,13 @@ Find a rare book among users MyLibrary.
 
 Configurable via a config (~/.mylibrary.yml). Example config you can find in a folder 'conf' github project.
 
-### mylibrary backup -t=db
+#### mylibrary backup -t=db
 Back up the database. You can specify a folder or ftp in the configuration file.
 
-### mylibrary backup -t=tar
+#### mylibrary backup -t=tar
 Back up the files or dirs in tar.gz. For compression use pigz (& tar) with multi-stream archive build capability.
 
-### mylibrary cleaner -t=tokens
+#### mylibrary cleaner -t=tokens
 Clearing obsolete tokens from the database. Application specific.
 
 ```python
@@ -27,10 +27,10 @@ Clearing obsolete tokens from the database. Application specific.
 def clear_old(cls, app):
 ```
 
-### mylibrary cleaner -t=images
+#### mylibrary cleaner -t=images
 Clearing non-database images in the folder specified in the configuration file.
 
-### mylibrary notification
+#### mylibrary notification
 Messaging google push firebase. Application specific. You need to build a request for a specific database.
 
 ```python
