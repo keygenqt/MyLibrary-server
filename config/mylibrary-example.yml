@@ -1,6 +1,9 @@
 ### MyLibrary Configuration Settings
 ---
 
+messaging:
+  google_application_credentials: /home/library/credentials.json
+
 db_conf:
   host: localhost
   user: db_user

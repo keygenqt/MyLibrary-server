@@ -30,6 +30,6 @@ class Notification(Controller):
     @ex(help='sending firebase push messages')
     def notification(self):
         for model in ModelNotification.find_open(self.app):
-            send_to_token(model)
+            send_to_token(self.app, model)
             ModelNotification.close(model, self.app)
         self.app.db.commit()

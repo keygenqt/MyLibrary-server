@@ -3,25 +3,24 @@ import os
 import firebase_admin
 from firebase_admin import messaging
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/home/keygenqt/.mylibrary/mylibrary-b6e25-e70a9713b130.json"
+firebase_admin.initialize_app()
 
-default_app = firebase_admin.initialize_app()
 
-# /home/keygenqt/Android/Sdk/platform-tools/adb shell am start -a android.intent.action.VIEW -c android.intent.category.BROWSABLE -d "https://keygenqt.com/licenses"
-def send_to_token(notification):
+def send_to_token(app, model):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = app.config.get('messaging', 'google_application_credentials')
     messaging.send(messaging.Message(
         notification=messaging.Notification(
-            title=notification.title,
-            body=notification.body,
+            title=model.title,
+            body=model.body,
         ),
         android=messaging.AndroidConfig(
             notification=messaging.AndroidNotification(
-                channel_id=notification.channel_id,
+                channel_id=model.channel_id,
                 click_action='android.intent.action.DEEP_LINK'
             ),
         ),
         data={
-            'uri': notification.uri
+            'uri': model.uri
         },
-        token=notification.message_token,
+        token=model.message_token,
     ))
