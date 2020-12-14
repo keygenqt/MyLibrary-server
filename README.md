@@ -11,8 +11,7 @@ Find a rare book among users MyLibrary.
 * cleaning up obsolete files and data
 * sending firebase push messages
 
-Configurable via a config (~/.mylibrary.yml). Example config you can find in a folder 'conf' github project.
-
+[![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-white.svg)](https://snapcraft.io/mylibrary)
 
 ### Backup db
 ```shell
