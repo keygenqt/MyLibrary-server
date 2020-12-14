@@ -16,8 +16,8 @@ limitations under the License.
 
 import os
 from cement import Controller, ex
-from ..models.model_user_token import ModelUserToken
-from ..models.model_image import get_model_image
+from mylibrary.ext.models.model_user_token import ModelUserToken
+from mylibrary.ext.models.model_image import get_model_image
 from configparser import NoSectionError
 from pathlib import Path
 

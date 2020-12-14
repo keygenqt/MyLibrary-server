@@ -16,8 +16,8 @@ limitations under the License.
 
 from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
-from ..models.model_notification import ModelNotification
-from ..ext.firebase_messaging import send_to_token
+from mylibrary.ext.models.model_notification import ModelNotification
+from mylibrary.ext.base.firebase_messaging import send_to_token
 
 Base = declarative_base()
 

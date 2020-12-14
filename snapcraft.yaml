@@ -1,6 +1,6 @@
 name: mylibrary
 base: core18
-version: '1.0.0'
+version: '0.0.2'
 summary: Application for cataloging your books library. Server part - Cement.
 description: |
   * server data backup
@@ -24,6 +24,12 @@ parts:
       - sqlalchemy
       - PyMySQL
       - firebase-admin
+
+  mylibrary-config:
+    plugin: dump
+    source: config
+    organize:
+      mylibrary-example.yml: conf/mylibrary.yml
 
   mylibrary-run:
     plugin: dump

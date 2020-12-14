@@ -19,7 +19,7 @@ import os
 import uuid
 from pathlib import Path
 from cement import Controller, ex
-from ..ext.dump import save_dump, save_ftp
+from mylibrary.ext.base.dump import save_dump, save_ftp
 
 
 class Backup(Controller):

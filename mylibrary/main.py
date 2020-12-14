@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import os
 from cement import App, init_defaults
 from cement.core.exc import CaughtSignal
 from .core.exc import MyAppError
@@ -21,9 +22,16 @@ from .controllers.base import Base
 from .controllers.backup import Backup
 from .controllers.cleaner import Cleaner
 from .controllers.notification import Notification
-from .ext.sqlalchemy_init import sqlalchemy_init
+from mylibrary.ext.base.sqlalchemy_init import sqlalchemy_init
+from pathlib import Path
 
 CONFIG = init_defaults('mylibrary')
+SNAP_USER_COMMON = os.getenv('SNAP_USER_COMMON')
+
+if not SNAP_USER_COMMON:
+    config_dir = str(Path.home())
+else:
+    config_dir = SNAP_USER_COMMON
 
 
 class MyApp(App):
@@ -35,6 +43,8 @@ class MyApp(App):
 
         # call sys.exit() on close
         exit_on_close = True
+
+        config_dirs = [config_dir]
 
         # load additional framework extensions
         extensions = [
@@ -71,6 +81,20 @@ class MyApp(App):
 def main():
     with MyApp() as app:
         try:
+
+            # check config file if default or not exist
+            try:
+                conf = open('{}/mylibrary.yml'.format(config_dir), "rt")
+                lines = conf.readlines()
+                conf.close()
+                for line in lines:
+                    if str('/home/library/credentials.json') in line:
+                        print('\nCheck your config file: {}/mylibrary.yml\n'.format(config_dir))
+                        exit(1)
+            except IOError:
+                print('\nCheck your config file: {}/mylibrary.yml\n'.format(config_dir))
+                exit(1)
+
             app.run()
 
         except AssertionError as e:
