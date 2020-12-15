@@ -22,6 +22,7 @@ from .controllers.base import Base
 from .controllers.backup import Backup
 from .controllers.cleaner import Cleaner
 from .controllers.notification import Notification
+from .controllers.reminder import Reminder
 from mylibrary.ext.base.sqlalchemy_init import sqlalchemy_init
 from pathlib import Path
 
@@ -70,6 +71,7 @@ class MyApp(App):
             Base,
             Backup,
             Cleaner,
+            Reminder,
             Notification,
         ]
 

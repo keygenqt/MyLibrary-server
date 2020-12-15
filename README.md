@@ -54,4 +54,12 @@ Messaging google push firebase. Application specific. You need to build a reques
 def find_open(cls, app):
 ```
 
-![picture](data/screenshot-46.png)
+### Create reminder notification
+```shell
+# 15 days
+mylibrary reminder -d=15
+
+# 25 days
+mylibrary reminder -d=25
+```
+Create reminder notification for 15 day and 25 day if user not open application
