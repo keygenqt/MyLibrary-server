@@ -62,4 +62,4 @@ mylibrary reminder -d=15
 # 25 days
 mylibrary reminder -d=25
 ```
-Create reminder notification for 15 day and 25 day if user not open application
+Create reminder notification for 15 day and 25 day if user not open application. Application specific.
