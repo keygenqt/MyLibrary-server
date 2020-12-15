@@ -33,7 +33,7 @@ mylibrary cleaner -t=tokens
 Clearing obsolete tokens from the database. Application specific.
 
 ```python
-# find method in the project for change for your app
+# find method in the project for change
 def clear_old(cls, app):
 ```
 
@@ -50,7 +50,7 @@ mylibrary notification
 Messaging google push firebase. Application specific. You need to build a request for a specific database.
 
 ```python
-# find method in the project for change for your app
+# find method in the project for change
 def find_open(cls, app):
 ```
 
@@ -63,3 +63,8 @@ mylibrary reminder -d=15
 mylibrary reminder -d=25
 ```
 Create reminder notification for 15 day and 25 day if user not open application. Application specific.
+
+```python
+# find Controller in the project for change
+class Reminder(Controller):
+```
