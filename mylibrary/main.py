@@ -30,10 +30,9 @@ CONFIG = init_defaults('mylibrary')
 SNAP_USER_COMMON = os.getenv('SNAP_USER_COMMON')
 
 if not SNAP_USER_COMMON:
-    config_dir = str(Path.home())
+    CONFIG['mylibrary']['home'] = str(Path.home())
 else:
-    config_dir = SNAP_USER_COMMON
-
+    CONFIG['mylibrary']['home'] = SNAP_USER_COMMON
 
 class MyApp(App):
     class Meta:
@@ -45,7 +44,7 @@ class MyApp(App):
         # call sys.exit() on close
         exit_on_close = True
 
-        config_dirs = [config_dir]
+        config_dirs = [CONFIG['mylibrary']['home']]
 
         # load additional framework extensions
         extensions = [
@@ -84,17 +83,19 @@ def main():
     with MyApp() as app:
         try:
 
+            home = app.config.get('mylibrary', 'home')
+
             # check config file if default or not exist
             try:
-                conf = open('{}/mylibrary.yml'.format(config_dir), "rt")
+                conf = open('{}/mylibrary.yml'.format(home), "rt")
                 lines = conf.readlines()
                 conf.close()
                 for line in lines:
                     if str('/home/library/credentials.json') in line:
-                        print('\nCheck your config file: {}/mylibrary.yml\n'.format(config_dir))
+                        print('\nCheck your config file: {}/mylibrary.yml\n'.format(home))
                         exit(1)
             except IOError:
-                print('\nCheck your config file: {}/mylibrary.yml\n'.format(config_dir))
+                print('\nCheck your config file: {}/mylibrary.yml\n'.format(home))
                 exit(1)
 
             app.run()

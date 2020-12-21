@@ -51,7 +51,8 @@ class Backup(Controller):
         db_user = self.app.config.get('db_conf', 'user')
         db_pass = self.app.config.get('db_conf', 'passwd')
         db_name = self.app.config.get('db_conf', 'name')
-        tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
+        home = self.app.config.get('mylibrary', 'home')
+        tmp = '{}/{}.tar.gz'.format(home, uuid.uuid4())
 
         # subprocess for suppress output warning
         subprocess.getoutput('mysqldump -u {} -p{} {} > {}'.format(db_user, db_pass, db_name, tmp))
@@ -75,7 +76,8 @@ class Backup(Controller):
         for item in files:
             if os.path.isfile(item):
                 self.app.log.info('Start compress file: {}'.format(item))
-                tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
+                home = self.app.config.get('mylibrary', 'home')
+                tmp = '{}/{}.tar.gz'.format(home, uuid.uuid4())
                 subprocess.getoutput(
                     'tar --absolute-names --use-compress-program="pigz --best --recursive -p {}" -cf {} {}'.format(processes,
                                                                                                                    tmp,
@@ -87,7 +89,8 @@ class Backup(Controller):
         for item in dirs:
             if os.path.isdir(item):
                 self.app.log.info('Start compress dir: {}'.format(item))
-                tmp = '{}/{}.tar.gz'.format(Path.home(), uuid.uuid4())
+                home = self.app.config.get('mylibrary', 'home')
+                tmp = '{}/{}.tar.gz'.format(home, uuid.uuid4())
                 if not exclude:
                     subprocess.getoutput(
                         'tar --absolute-names --use-compress-program="pigz --best --recursive -p {}" -cf {} {}'.format(processes,
