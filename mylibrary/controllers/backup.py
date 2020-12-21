@@ -52,7 +52,7 @@ class Backup(Controller):
         db_pass = self.app.config.get('db_conf', 'passwd')
         db_name = self.app.config.get('db_conf', 'name')
         home = self.app.config.get('mylibrary', 'home')
-        tmp = '{}/{}.tar.gz'.format(home, uuid.uuid4())
+        tmp = '{}/{}.sql'.format(home, uuid.uuid4())
 
         # subprocess for suppress output warning
         subprocess.getoutput('mysqldump -u {} -p{} {} > {}'.format(db_user, db_pass, db_name, tmp))

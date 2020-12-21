@@ -1,6 +1,6 @@
 name: mylibrary
 base: core18
-version: '0.0.5'
+version: '0.0.8'
 summary: Application for cataloging your books library. Server part - Cement.
 description: |
   * server data backup
@@ -28,6 +28,7 @@ parts:
     stage-packages:
       - pigz
       - tar
+      - mysql-client
 
   mylibrary-config:
     plugin: dump
