@@ -68,3 +68,15 @@ Create reminder notification for 15 day and 25 day if user not open application.
 # find Controller in the project for change
 class Reminder(Controller):
 ```
+
+### Cron configuration example
+
+```shell
+0 1 * * *   /snap/bin/mylibrary backup -t=db
+0 1 * * *   /snap/bin/mylibrary backup -t=tar
+0 1 * * *   /snap/bin/mylibrary cleaner -t=tokens
+0 1 * * *   /snap/bin/mylibrary cleaner -t=images
+0 1 * * *   /snap/bin/mylibrary reminder -d=15
+0 1 * * *   /snap/bin/mylibrary reminder -d=25
+*/5 * * * * /snap/bin/mylibrary notification
+```
