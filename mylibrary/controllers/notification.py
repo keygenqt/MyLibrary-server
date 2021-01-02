@@ -18,6 +18,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from cement import Controller, ex
 from mylibrary.ext.models.model_notification import ModelNotification
 from mylibrary.ext.base.firebase_messaging import send_to_token
+from requests.exceptions import HTTPError
 
 Base = declarative_base()
 
@@ -30,6 +31,9 @@ class Notification(Controller):
     @ex(help='sending firebase push messages')
     def notification(self):
         for model in ModelNotification.find_open(self.app):
-            send_to_token(self.app, model)
+            try:
+                send_to_token(self.app, model)
+            except HTTPError:
+                pass
             ModelNotification.close(model, self.app)
         self.app.db.commit()

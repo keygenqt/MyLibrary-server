@@ -107,3 +107,4 @@ venv.bak/
 
 # snap
 *.snap
+*.xdelta3
